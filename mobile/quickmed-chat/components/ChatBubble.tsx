@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Animated, View, Text, StyleSheet } from 'react-native';
+import { Animated, Text, StyleSheet } from 'react-native';
 
 type Props = {
     message: string;

@@ -25,6 +25,7 @@ export default function ChatApp() {
         { id: '1', text: 'Hi, how can I help you today?', sender: 'ai', timestamp: Date.now() },
     ]);
     const [input, setInput] = useState('');
+    const [isAITyping, setIsAITyping] = useState(false);
     const flatListRef = useRef<FlatList>(null);
 
     const sendMessage = () => {
@@ -39,6 +40,8 @@ export default function ChatApp() {
 
         setMessages((prev) => [...prev, userMsg]);
         setInput('');
+
+        setIsAITyping(true);
 
         // Add the "typing" message initially
         setMessages((prev) => [
@@ -72,6 +75,7 @@ export default function ChatApp() {
                         timestamp: Date.now()
                     })
             );
+            setIsAITyping(false);
         }, 3000);
     };
 
@@ -80,23 +84,24 @@ export default function ChatApp() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={[styles.container, { paddingBottom: insets.bottom }]}
         >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={{ flex: 1 }}>
-                    <FlatList
-                        ref={flatListRef}
-                        data={messages}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <ChatBubble message={item.text} isUser={item.sender === 'user'} timestamp={item.timestamp} />
-                        )}
-                        contentContainerStyle={{ padding: 10 }}
-                        onContentSizeChange={() =>
-                            flatListRef.current?.scrollToEnd({ animated: true })
-                        }
-                    />
-                </View>
-            </TouchableWithoutFeedback>
-            <InputBar message={input} setMessage={setInput} onSend={sendMessage} />
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    ref={flatListRef}
+                    data={messages}
+                    keyExtractor={(item) => item.id}
+                    keyboardShouldPersistTaps='handled'
+                    scrollEnabled={true}
+                    renderItem={({ item }) => (
+                        <ChatBubble message={item.text} isUser={item.sender === 'user'} timestamp={item.timestamp} />
+                    )}
+                    contentContainerStyle={{ padding: 10, flexGrow: 1 }}
+                    onContentSizeChange={() =>
+                        flatListRef.current?.scrollToEnd({ animated: true })
+                    }
+                    onScrollBeginDrag={Keyboard.dismiss}
+                />
+            </View>
+            <InputBar message={input} setMessage={setInput} onSend={sendMessage} disabled={isAITyping} />
         </KeyboardAvoidingView>
     )
 }
