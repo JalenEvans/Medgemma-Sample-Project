@@ -1,0 +1,14 @@
+{
+  "name": "quickmed-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "react-native-sse": "^1.2.1"
+  }
+}
