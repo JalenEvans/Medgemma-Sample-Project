@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 type Props = {
     message: string;
     isUser: boolean;
+    isStreaming?: boolean;
 };
 
 export default function ChatBubble({message, isUser}: Props) {
