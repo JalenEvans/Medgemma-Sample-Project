@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import EventSource from 'react-native-sse';
 import Constants from 'expo-constants';
+import { appendTokenWithSpace } from '@/utils/messageUtils';
 
 const backendURL = Constants.expoConfig?.extra?.BACKEND_URL ?? '';
 const port = Constants.expoConfig?.extra?.PORT ?? '';
@@ -80,7 +81,7 @@ export function useChatStream(): UseChatStreamReturn {
             setMessages(prev =>
                 prev.map(msg =>
                     msg.id === streamingId
-                        ? { ...msg, text: (msg.text ? msg.text + ' ' : '') + event.data }
+                        ? { ...msg, text: appendTokenWithSpace(msg.text || '', event.data ?? '') }
                         : msg
                 )
             );
