@@ -16,16 +16,15 @@ type Message = {
     id: string;
     text: string;
     sender: 'user' | 'ai';
+    timestamp?: number;
 }
 
 export default function ChatApp() {
     const insets = useSafeAreaInsets();
     const [messages, setMessages] = useState<Message[]>([
-        { id: '1', text: 'Hi, how can I help you today?', sender: 'ai' },
+        { id: '1', text: 'Hi, how can I help you today?', sender: 'ai', timestamp: Date.now() },
     ]);
     const [input, setInput] = useState('');
-    const [isAITyping, setIsAITyping] = useState(false);
-    const [streamedText, setStreamedText] = useState('');
     const flatListRef = useRef<FlatList>(null);
 
     const sendMessage = () => {
@@ -35,13 +34,11 @@ export default function ChatApp() {
             id: Date.now().toString(),
             text: input,
             sender: 'user',
+            timestamp: Date.now(),
         };
 
         setMessages((prev) => [...prev, userMsg]);
         setInput('');
-
-        setIsAITyping(true);
-        setStreamedText('')
 
         // Add the "typing" message initially
         setMessages((prev) => [
@@ -72,9 +69,9 @@ export default function ChatApp() {
                         id: (Date.now() + 1).toString(),
                         text: 'This is a mock AI response that streams slowly',
                         sender: 'ai',
+                        timestamp: Date.now()
                     })
             );
-            setIsAITyping(false);
         }, 3000);
     };
 
@@ -90,7 +87,7 @@ export default function ChatApp() {
                         data={messages}
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => (
-                            <ChatBubble message={item.text} isUser={item.sender === 'user'} />
+                            <ChatBubble message={item.text} isUser={item.sender === 'user'} timestamp={item.timestamp} />
                         )}
                         contentContainerStyle={{ padding: 10 }}
                         onContentSizeChange={() =>
